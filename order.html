@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Larana Coffee Order</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      /* display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; */
+    }
+
+    section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      z-index: 1;
+      position: fixed;
+      animation: floatUp 1.5s ease;
+      margin-top: 3rem;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #6f4e37;
+      text-align: center;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #6f4e37;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      background-color: #3e2f23;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+      display: none;
+      /*animation: fadeIn 1s ease;*/
+    }
+
+    #coffeeParticles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .back {
+      position: fixed;
+      z-index: -1;
+      top: 0.1rem;
+      margin-bottom: 5rem;
+      width: 100%;
+      height: 300vh;
+      border: 0.2rem solid #fff;
+      border-radius: 2rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+      height: 100%;
+      object-fit: cover;
+
+    }
+
+    .nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav img {
+      margin-top: 14rem;
+      margin-left: 80rem;
+      width: 10rem;
+      cursor: pointer;
+      border-radius: 50%;
+      position: fixed;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 25px 20px;
+        margin-top: 2rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .nav img {
+        width: 6rem;
+        top: 1rem;
+        right: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 20px 15px;
+        margin-top: 1rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      input,
+      select,
+      button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .message {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="nav">
+    <img src="Cup.png" alt="Logo">
+    <video loop autoplay muted plays-inline class="back">
+      <source src="Backvideo.mp4" type="video/mp4">
+    </video>
+  </div>
+  <!-- <canvas id="coffeeParticles"></canvas> -->
+  <!-- <audio autoplay loop muted id="bg-music">
+  <source src="tune.mp3" type="audio/mp3">
+  Your browser does not support the audio element.
+</audio> -->
+  <section>
+    <div class="form-container">
+      <h2>Place Your Order</h2>
+              <form action="ordver.html" method="get">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="text" id="address" placeholder="Address" required>
+        <select id="coffee" required>
+          <option value="">Choose Coffee</option>
+          <option value="Espresso">Espresso</option>
+          <option value="Latte">Latte</option>
+          <option value="Cappuccino">Cappuccino</option>
+        </select>
+        <input type="number" id="quantity" placeholder="Quantity" min="1" required>
+        <button type="submit">Submit</button>
+                <form action="verify.html" method="get">
+      </form>
+      <div class="message" id="messageBox"></div>
+    </div>
+  </section>
+
+  <script>
+    // Unmute background music on click
+    window.addEventListener("click", () => {
+      document.getElementById("bg-music").muted = false;
+    });
+
+    // Particle animation
+    const canvas = document.getElementById('coffeeParticles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let beans = [];
+    for (let i = 0; i < 60; i++) {
+      beans.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        size: Math.random() * 20 + 10,
+        speed: Math.random() * 2 + 1
+      });
+    }
+
+    function drawBeans() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#6f4e37";
+      beans.forEach(bean => {
+        ctx.beginPath();
+        ctx.ellipse(bean.x, bean.y, bean.size * 0.6, bean.size, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        bean.y += bean.speed;
+        if (bean.y > canvas.height) {
+          bean.y = 0;
+          bean.x = Math.random() * canvas.width;
+        }
+      });
+    }
+    /* requestAnimationFrame(drawBeans);
+   
+   drawBeans();*/
+
+    // Form submission to Google Sheet
+    const form = document.getElementById("orderForm");
+    const messageBox = document.getElementById("messageBox");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const address = document.getElementById("address").value;
+      const coffee = document.getElementById("coffee").value;
+      const quantity = document.getElementById("quantity").value;
+      const total = quantity * 120;
+
+      const googleFormURL = "https://docs.google.com/forms/d/e/YOUR-FORM-ID/formResponse"; // Replace this
+
+      const formData = new FormData();
+      formData.append("entry.1234567890", name);      // Replace with your real entry IDs
+      formData.append("entry.2345678901", address);
+      formData.append("entry.3456789012", coffee);
+      formData.append("entry.4567890123", quantity);
+
+      fetch(googleFormURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+      })
+        .then(() => {
+          messageBox.innerHTML = `
+        ✅ <strong>Thank you, ${name}!</strong><br>
+        Your order for <strong>${quantity}</strong> x <strong>${coffee}</strong> has been placed.<br>
+        Total: ₹${total}<br>
+        Delivery to: <em>${address}</em>`;
+          messageBox.style.display = "block";
+          form.reset();
+        })
+        .catch(() => {
+          messageBox.innerHTML = "❌ Error submitting form. Please try again.";
+          messageBox.style.display = "block";
+        });
+    });
+  </script>
+
+</body>
+
+</html>
